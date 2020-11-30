@@ -1,9 +1,8 @@
-package se.tosu.aoc2019.input;
+package se.tosu.aoc.input;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

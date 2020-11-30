@@ -1,4 +1,4 @@
-package se.tosu.aoc2019.input;
+package se.tosu.aoc.input;
 
 import java.io.InputStream;
 import java.util.LinkedList;

@@ -1,4 +1,4 @@
-package se.tosu.aoc2019.dayone;
+package se.tosu.aoc.y2019.dayone;
 
 import java.util.List;
 

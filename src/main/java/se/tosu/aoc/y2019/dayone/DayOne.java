@@ -1,6 +1,6 @@
-package se.tosu.aoc2019.dayone;
+package se.tosu.aoc.y2019.dayone;
 
-import se.tosu.aoc2019.input.Input;
+import se.tosu.aoc.input.Input;
 
 import java.util.List;
 
