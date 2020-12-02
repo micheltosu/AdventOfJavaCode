@@ -18,7 +18,7 @@ public class Input {
         }
     }
 
-    List<String> getFileRowsAsListOfStrings(String path) {
+    public List<String> getFileRowsAsListOfStrings(String path) {
         InputStream inputStream = openResourceFromString(path);
         return readStreamAndReturnLinesAsListOfStrings(inputStream);
     }
