@@ -1,9 +1,6 @@
 package se.tosu.aoc.y2020.daytwo;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public abstract class PolicyRule<T> {
     private final String pattern;
