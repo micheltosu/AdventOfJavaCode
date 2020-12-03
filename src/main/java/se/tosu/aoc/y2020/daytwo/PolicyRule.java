@@ -5,10 +5,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class PolicyRule {
+public abstract class PolicyRule<T> {
     private final String pattern;
     private final int min;
     private final int max;
+
+    public String getPattern() {
+        return pattern;
+    }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
 
     public PolicyRule(String pattern, int min, int max) {
         this.pattern = pattern;
@@ -16,19 +28,9 @@ public class PolicyRule {
         this.max = max;
     }
 
-    public static PolicyRule parse(String ruleAsString) {
+    public abstract boolean allows(String query);
 
-        List<String> parts = Arrays.stream(ruleAsString.split("[-\\W:]"))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
-
-        return new PolicyRule(parts.get(2), Integer.parseInt(parts.get(0)), Integer.parseInt(parts.get(1)));
-    }
-
-    public PolicyRule copy() {
-        return new PolicyRule(pattern, min, max);
-    }
+    public abstract T copy();
 
     @Override
     public boolean equals(Object obj) {
@@ -47,27 +49,5 @@ public class PolicyRule {
     @Override
     public int hashCode() {
         return Objects.hash(pattern, min, max);
-    }
-
-    public boolean allows(String query) {
-        int occurrences = countOccurancesOfPatternInString(query);
-        return occurrences >= min && occurrences <= max;
-    }
-
-    private int countOccurancesOfPatternInString(String query) {
-        if (!query.contains(pattern))
-            return 0;
-
-        int occurrences = 0;
-        int indexOf = 0;
-        do {
-            indexOf = query.indexOf(pattern, indexOf);
-            if (indexOf != -1) {
-                indexOf += 1;
-                occurrences += 1;
-            }
-        } while (indexOf != -1);
-
-        return occurrences;
     }
 }

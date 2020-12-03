@@ -8,7 +8,7 @@ class DayTwoTest {
 
     @Test
     void runSolutionOnTestData() {
-        int actual = new DayTwo().runSolution("2020/D2-test1.txt");
+        int actual = new DayTwo().getTaskOneSolution("2020/D2-test1.txt");
         assertEquals(actual, 2);
     }
 }

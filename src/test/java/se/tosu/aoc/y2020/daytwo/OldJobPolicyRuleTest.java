@@ -4,39 +4,39 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class PolicyRuleTest {
+class OldJobPolicyRuleTest {
 
     private static final String PATTERN = "a";
     private static final int MIN = 1;
     private static final int MAX = 2;
-    private static final PolicyRule RULE_A = new PolicyRule(PATTERN, MIN, MAX);
+    private static final OldJobPolicyRule RULE_A = new OldJobPolicyRule(PATTERN, MIN, MAX);
 
     @Test
     void testCopyReturnsNewRule() {
-        PolicyRule policyRule = RULE_A;
-        assertNotSame(policyRule, policyRule.copy());
+        OldJobPolicyRule oldJobPolicyRule = RULE_A;
+        assertNotSame(oldJobPolicyRule, oldJobPolicyRule.copy());
     }
 
     @Test
     void testRuleWithSameConstraintsEqualsTrue() {
-        PolicyRule rule = RULE_A;
+        OldJobPolicyRule rule = RULE_A;
 
         assertEquals(rule, rule.copy());
     }
 
     @Test
     void testRulesWithDifferentMaxConstraintEqualsFalse() {
-        assertNotEquals(RULE_A, new PolicyRule(PATTERN, MIN, 4));
+        assertNotEquals(RULE_A, new OldJobPolicyRule(PATTERN, MIN, 4));
     }
 
     @Test
     void testRulesWithDifferentPatternConstraintEqualsFalse() {
-        assertNotEquals(RULE_A, new PolicyRule("other pattern", MIN, MAX));
+        assertNotEquals(RULE_A, new OldJobPolicyRule("other pattern", MIN, MAX));
     }
 
     @Test
     void testRulesWithDifferentMinConstraintEqualsFalse() {
-        assertNotEquals(RULE_A, new PolicyRule(PATTERN, 0, MAX));
+        assertNotEquals(RULE_A, new OldJobPolicyRule(PATTERN, 0, MAX));
     }
 
     @Test
@@ -46,21 +46,21 @@ class PolicyRuleTest {
 
     @Test
     void testHashIsDifferentForNonEqualObject() {
-        assertNotEquals(RULE_A.hashCode(), new PolicyRule(PATTERN, 3, MAX).hashCode());
+        assertNotEquals(RULE_A.hashCode(), new OldJobPolicyRule(PATTERN, 3, MAX).hashCode());
     }
 
     @Test
     void testParseStringToRule() {
-        PolicyRule expected = new PolicyRule("a", 1,3);
+        OldJobPolicyRule expected = new OldJobPolicyRule("a", 1,3);
 
-        PolicyRule actual = PolicyRule.parse("1-3 a: xxxuufdio");
+        OldJobPolicyRule actual = OldJobPolicyRule.parse("1-3 a: xxxuufdio");
 
         assertEquals(actual, expected);
     }
 
     @Test
     void testParseDifferentStringsDoesNotEqual() {
-        assertNotEquals(PolicyRule.parse("2-3 a: sjkl"), PolicyRule.parse("1-3 b: bbb"));
+        assertNotEquals(OldJobPolicyRule.parse("2-3 a: sjkl"), OldJobPolicyRule.parse("1-3 b: bbb"));
     }
 
     @Test
