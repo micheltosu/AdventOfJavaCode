@@ -11,27 +11,44 @@ import java.util.stream.Stream;
 public class DayFive {
     private final String inputResourcePath;
 
-    public DayFive(String inputResourcePath) {
-        this.inputResourcePath = inputResourcePath;
-    }
-
     public static void main(String[] args) {
         DayFive dayFive = new DayFive("2020/5.txt");
         dayFive.task1();
         dayFive.task2();
     }
 
+    public DayFive(String inputResourcePath) {
+        this.inputResourcePath = inputResourcePath;
+    }
+
     private void task1() {
-        int seatId = findBoardingPassWithHighestSeatId().getSeatId();
-        System.out.printf("The boarding pass with highest id has id: %d\n", seatId);
+        BoardingPass boardingPassWithHighestSeatId = findBoardingPassWithHighestSeatId();
+        System.out.printf("The boarding pass with highest id has id: %d\n",
+                boardingPassWithHighestSeatId.getSeatId());
     }
 
     private void task2() {
-        List<BoardingPass> allBoardingPasses = getBoardingPassStream()
-            .sorted(Comparator.comparingInt(BoardingPass::getSeatId))
-                .collect(Collectors.toCollection(ArrayList::new));
+        List<BoardingPass> allBoardingPasses = getBoardingPassesSortedOnSeatId();
 
         System.out.printf("The missing boarding pass has id: %d\n", getMissingId(allBoardingPasses));
+    }
+
+    public BoardingPass findBoardingPassWithHighestSeatId() {
+        return getBoardingPassStream()
+                .max(Comparator.comparingInt(BoardingPass::getSeatId))
+                .orElseThrow(() -> new RuntimeException("Found no seat id."));
+    }
+
+    private ArrayList<BoardingPass> getBoardingPassesSortedOnSeatId() {
+        return getBoardingPassStream()
+                .sorted(Comparator.comparingInt(BoardingPass::getSeatId))
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private Stream<BoardingPass> getBoardingPassStream() {
+        List<String> input = readFile();
+        return input.stream()
+                .map(BoardingPass::new);
     }
 
     private int getMissingId(List<BoardingPass> allBoardingPasses) {
@@ -49,22 +66,5 @@ public class DayFive {
 
     List<String> readFile() {
         return new Input().getFileRowsAsListOfStrings(inputResourcePath);
-    }
-
-    public BoardingPass findBoardingPassWithHighestSeatId() {
-        return getBoardingPassStream()
-                .max(Comparator.comparingInt(BoardingPass::getSeatId))
-                .get();
-    }
-
-
-    private Stream<BoardingPass> getBoardingPassStream() {
-        List<String> input = readFile();
-        return input.stream()
-                .map(BoardingPass::new);
-    }
-
-    public List<BoardingPass> getAllBoardingPasses() {
-        return getBoardingPassStream().collect(Collectors.toList());
     }
 }
