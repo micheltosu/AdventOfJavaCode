@@ -16,12 +16,11 @@ class DaySixTest {
 
     @Test
     void testReduceListOfStringsToSetOfChars() {
-
         List<String> stringList = List.of("abcx", "abcy", "abcz");
 
         Set<Character> actual = new DaySix("2020/D6-test1.txt").reduceArrayOfStringsToSetOfChars(stringList);
-        assertEquals(Stream.of('a','b','c','x','y','z').collect(Collectors.toCollection(HashSet::new)), actual);
 
+        assertEquals(Stream.of('a','b','c','x','y','z').collect(Collectors.toCollection(HashSet::new)), actual);
     }
 
     @Test
@@ -29,6 +28,7 @@ class DaySixTest {
         List<String> stringList = List.of("abcx", "abcy", "abcz");
 
         Set<Character> actual = new DaySix("2020/D6-test1.txt").findCommonCharsInAllStrings(stringList);
+
         assertEquals(Stream.of('a','b','c').collect(Collectors.toCollection(HashSet::new)), actual);
     }
 
@@ -40,5 +40,10 @@ class DaySixTest {
     @Test
     void testTask2() {
         assertEquals(6, new DaySix(TEST_PATH).task2());
+    }
+
+    @Test
+    void testTaskTwoReturnsCorrectValue() {
+        assertEquals(3202, new DaySix("2020/6.txt").task2());
     }
 }
