@@ -17,4 +17,9 @@ class DaySevenTest {
     void testGetNumberOfColorsAbleToContainGoldBags() {
         assertEquals(4, new DaySeven(TEST_FILE).getColorsAbleToContainColor("gold").size());
     }
+
+    @Test
+    void testGetBagsNeededToUseBag() {
+        assertEquals(126, new DaySeven(TEST_FILE).getBagsNeeded("shiny gold"));
+    }
 }
