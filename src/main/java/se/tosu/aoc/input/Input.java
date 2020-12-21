@@ -1,6 +1,7 @@
 package se.tosu.aoc.input;
 
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,6 +13,16 @@ public class Input {
         try {
             return getFileRowsAsListOfStrings(path).stream()
                     .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not read file", e);
+        }
+    }
+
+    public List<BigInteger> getListOfBigIntegersFromInputFile(String resourcePath) {
+        try {
+            return getFileRowsAsListOfStrings(resourcePath).stream()
+                    .map(BigInteger::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
             throw new RuntimeException("Could not read file", e);
