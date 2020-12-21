@@ -29,8 +29,30 @@ public class DaySeven {
                 getBagsNeeded("shiny gold"));
     }
 
-    int getBagsNeeded(String bagColor) {
+    Collection<Rule> getColorsAbleToContainColor(String keyword) {
+        Collection<Rule> validRules = getRulesAllowing(keyword);
+        Queue<Rule> ancestorRules = new LinkedList<>(validRules);
 
+        while (!ancestorRules.isEmpty()) {
+            Collection<Rule> allowingRules = getRulesAllowing(ancestorRules.poll().getBagColor());
+            ancestorRules.addAll(allowingRules);
+            validRules.addAll(allowingRules);
+        }
+
+        return validRules.stream().distinct().collect(Collectors.toList());
+    }
+
+    Collection<Rule> getRulesAllowing(String keyword) {
+        String strippedKeyword = keyword.strip();
+
+        return getRuleStream()
+                .filter(rule -> rule.getConstraints().stream()
+                        .flatMap(constraint -> Stream.of(constraint.getRule().getBagColor()))
+                        .anyMatch(s -> s.equals(strippedKeyword)))
+                .collect(Collectors.toList());
+    }
+
+    int getBagsNeeded(String bagColor) {
         Map<String, Rule> ruleMap = getRuleStream().collect(Collectors.toMap(Rule::getBagColor, rule -> rule));
 
         Rule rootRule = ruleMap.get(bagColor);
@@ -65,59 +87,4 @@ public class DaySeven {
         return new Input().getFileRowsAsListOfStrings(path).stream()
                 .map(Rule::parse);
     }
-
-
-    Collection<String> getColorsAbleToContainColor(String keyword) {
-        Collection<String[]> validRules = getRulesAllowing(keyword);
-        Collection<String[]> ancestorRules = validRules;
-
-        do {
-            ancestorRules = ancestorRules.stream()
-                    .map(rule -> getRulesAllowing(rule[0]))
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
-
-            validRules.addAll(ancestorRules);
-        } while (ancestorRules.size() != 0);
-
-        return validRules.stream()
-                .map(strings -> strings[0])
-                .distinct()
-                .collect(Collectors.toList());
-    }
-
-    Collection<String[]> getRulesAllowing(String keyword) {
-        List<String> inputRows = new Input().getFileRowsAsListOfStrings(path);
-        String strippedKeyword = keyword.strip();
-
-        return inputRows.stream()
-                .map(s -> s.split("contain"))
-                .filter(rule -> rule[1].contains(strippedKeyword))
-                .map(rule -> Arrays.stream(rule)
-                        .map( s -> s.replaceAll("bags|bag", ""))
-                        .map(String::strip)
-                        .toArray(String[]::new))
-                .collect(Collectors.toList());
-
-    }
-
-
- /*   int getNumBagsNeededForColor(String keyword) {
-        List<String> inputRows = new Input().getFileRowsAsListOfStrings(path);
-        String strippedKeyword = keyword.replaceAll("\\s*(bags|bag)\\s*", "");
-
-        return getRulesThatApplyForColor(strippedKeyword).stream()
-                .map(s -> s[1].split(","))
-                //.filter(rule -> rule[0].contains(strippedKeyword))
-                .map(rule -> Arrays.stream(rule)
-                        .map( s -> s.replaceAll("bags|bag", ""))
-                        .map(String::strip)
-                        .toArray(String[]::new))
-                .map(strings -> strings[1].split(","))
-                .flatMap(strings -> Arrays.stream(strings.clone()))
-                .map(Integer::parseInt)
-                .reduce(Integer::sum)
-                .orElse(0);
-
-    }*/
 }

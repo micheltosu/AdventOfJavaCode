@@ -10,12 +10,12 @@ class DaySevenTest {
 
     @Test
     void testFindRulesAllowingGoldBags() {
-        assertEquals(2, new DaySeven(TEST_FILE).getRulesAllowing("gold").size());
+        assertEquals(2, new DaySeven(TEST_FILE).getRulesAllowing("shiny gold").size());
     }
 
     @Test
     void testGetNumberOfColorsAbleToContainGoldBags() {
-        assertEquals(4, new DaySeven(TEST_FILE).getColorsAbleToContainColor("gold").size());
+        assertEquals(4, new DaySeven(TEST_FILE).getColorsAbleToContainColor("shiny gold").size());
     }
 
     @Test
