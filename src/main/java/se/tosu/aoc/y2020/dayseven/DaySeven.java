@@ -3,9 +3,8 @@ package se.tosu.aoc.y2020.dayseven;
 import se.tosu.aoc.input.Input;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DaySeven {
 
@@ -30,27 +29,41 @@ public class DaySeven {
                 getBagsNeeded("shiny gold"));
     }
 
-    int getBagsNeeded(String shiny_gold) {
+    int getBagsNeeded(String bagColor) {
 
-        Collection<String[]> bagsNeeded =  getRulesThatApplyForColor(shiny_gold);
-        Collection<String[]> descendantRules = bagsNeeded;
+        Map<String, Rule> ruleMap = getRuleStream().collect(Collectors.toMap(Rule::getBagColor, rule -> rule));
 
-        do {
-            descendantRules = descendantRules.stream()
-                    .map(rule -> rule[1].split(","))
-                    .flatMap(Arrays::stream)
-                    .map(s -> s.replaceAll("(bags|bag)(\\.|)", ""))
-                    .map(String::strip)
-                    .map(s -> s.replaceAll("\\s*\\d+\\s*", ""))
-                    .map(this::getRulesThatApplyForColor)
-                    .flatMap(Collection::stream)
-                    .collect(Collectors.toList());
+        Rule rootRule = ruleMap.get(bagColor);
+        if (rootRule == null)
+            throw new RuntimeException("Could not find a rule for"  + bagColor);
 
+        Queue<Rule> incompleteRules = new LinkedList<>();
+        incompleteRules.add(rootRule);
 
-            bagsNeeded.addAll(descendantRules);
-        } while (descendantRules.size() != 0);
+        while (!incompleteRules.isEmpty()) {
+            Rule actual = incompleteRules.poll();
+            List<Constraint> linkedConstraints = new ArrayList<>();
+            for (Constraint constraint : actual.getConstraints()) {
+                Rule foundRule = ruleMap.get(constraint.getRule().getBagColor());
+                if (foundRule != null) {
+                    linkedConstraints.add(new Constraint(constraint.getRequiredCount(), foundRule));
 
-        return bagsNeeded.stream().map(strings -> strings[0]).distinct().map(this::getNumBagsNeededForColor).reduce(Integer::sum).get();
+                } else {
+                    throw new RuntimeException("Could not find a rule matching constraint: " + constraint);
+                }
+
+                incompleteRules.add(foundRule);
+            }
+
+            actual.setConstraints(linkedConstraints);
+        }
+
+        return rootRule.getBagsNeeded();
+    }
+
+    private Stream<Rule> getRuleStream() {
+        return new Input().getFileRowsAsListOfStrings(path).stream()
+                .map(Rule::parse);
     }
 
 
@@ -88,23 +101,14 @@ public class DaySeven {
 
     }
 
-    Collection<String[]> getRulesThatApplyForColor(String keyword) {
-        List<String> inputRows = new Input().getFileRowsAsListOfStrings(path);
-        String strippedKeyword = keyword.strip();
 
-        return inputRows.stream()
-                .map(s -> s.split("contain"))
-                .filter(rule -> rule[0].contains(strippedKeyword))
-                .collect(Collectors.toList());
-    }
-
-    int getNumBagsNeededForColor(String keyword) {
+ /*   int getNumBagsNeededForColor(String keyword) {
         List<String> inputRows = new Input().getFileRowsAsListOfStrings(path);
-        String strippedKeyword = keyword.strip().replaceAll("bags|bag", "");
+        String strippedKeyword = keyword.replaceAll("\\s*(bags|bag)\\s*", "");
 
         return getRulesThatApplyForColor(strippedKeyword).stream()
                 .map(s -> s[1].split(","))
-                .filter(rule -> rule[0].contains(strippedKeyword))
+                //.filter(rule -> rule[0].contains(strippedKeyword))
                 .map(rule -> Arrays.stream(rule)
                         .map( s -> s.replaceAll("bags|bag", ""))
                         .map(String::strip)
@@ -113,7 +117,7 @@ public class DaySeven {
                 .flatMap(strings -> Arrays.stream(strings.clone()))
                 .map(Integer::parseInt)
                 .reduce(Integer::sum)
-                .get();
+                .orElse(0);
 
-    }
+    }*/
 }

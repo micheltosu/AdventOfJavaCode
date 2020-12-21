@@ -20,6 +20,6 @@ class DaySevenTest {
 
     @Test
     void testGetBagsNeededToUseBag() {
-        assertEquals(126, new DaySeven(TEST_FILE).getBagsNeeded("shiny gold"));
+        assertEquals(32, new DaySeven(TEST_FILE).getBagsNeeded("shiny gold"));
     }
 }
