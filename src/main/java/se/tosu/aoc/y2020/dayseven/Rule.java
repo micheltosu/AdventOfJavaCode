@@ -72,14 +72,9 @@ public class Rule {
     }
 
     public int getBagsNeeded() {
-        if (constraints.isEmpty()) {
-            return 0;
-        } else {
-            int bagsNeeded = 0;
-            for (Constraint constraint : constraints) {
-                bagsNeeded += constraint.getRequiredCount() * (1 + constraint.getRule().getBagsNeeded());
-            }
-            return bagsNeeded;
-        }
+        return constraints.stream()
+                .map(Constraint::getBagsNeeded)
+                .reduce(Math::addExact)
+                .orElse(0);
     }
 }

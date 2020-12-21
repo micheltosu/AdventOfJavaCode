@@ -19,6 +19,10 @@ public class Constraint {
         return rule;
     }
 
+    public int getBagsNeeded() {
+        return requiredCount * (1 + rule.getBagsNeeded());
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
