@@ -10,13 +10,16 @@ public class DayNine {
     private final String resourcePath;
 
     public DayNine(String resourcePath) {
-
         this.resourcePath = resourcePath;
     }
 
     public static void main(String[] args) {
-        System.out.printf("The first non-matching number in input: %d",
-                new DayNine("2020/9.txt").task1(25));
+        DayNine dayNine = new DayNine("2020/9.txt");
+        BigInteger task1 = dayNine.task1(25);
+        System.out.printf("The first non-matching number in input: %d\n", task1);
+
+        System.out.printf("Adding min and max addends of the invalid number gives: %s",
+                dayNine.task2(task1));
     }
 
     public BigInteger task1(int bufferSize) {
@@ -37,5 +40,21 @@ public class DayNine {
         }
 
         throw new RuntimeException("All numbers in input fulfilled the constraints");
+    }
+
+    public BigInteger task2(BigInteger number) {
+        List<BigInteger> input = new Input().getListOfBigIntegersFromInputFile(resourcePath);
+        List<BigInteger> setOfAddendsForNumber = AddendFinder.findContiguousSetOfAddendsForNumber(input, number);
+
+        BigInteger max = setOfAddendsForNumber.stream()
+                .reduce(BigInteger::max)
+                .get();
+
+        BigInteger min = setOfAddendsForNumber.stream()
+                .reduce(BigInteger::min)
+                .get();
+
+        return max.add(min);
+
     }
 }
